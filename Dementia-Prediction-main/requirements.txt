@@ -5,4 +5,4 @@ keras
 tensorflow
 pandas
 numpy
-mysql-connector
+mysql-connector-python
