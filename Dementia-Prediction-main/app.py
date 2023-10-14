@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-# import tensorflow as tf
+import mysql.connector
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
@@ -12,9 +12,6 @@ from sklearn.metrics import accuracy_score
 
 # Load the dataset
 data = pd.read_csv("./Dataset/Dementia_Detection_clead_data.csv")
-
-# url = "https://github.com/pritipaul/Dementia-Prediction/blob/main/Dataset/Dementia_Detection_clead_data.csv"
-# data = pd.read_csv(url)
 
 # Split into features and target
 y = data['Group']
@@ -56,6 +53,14 @@ def predict_dementia(features):
 
     return predicted_label
 
+# Database connection
+db = mysql.connector.connect(
+    host="your_database_host",
+    user="your_database_user",
+    password="your_database_password",
+    database="your_database_name"
+)
+
 # Streamlit app code
 def main():
     # Set the app title and description
@@ -77,6 +82,12 @@ def main():
         features = [gender, age, educ, ses, mmse, cdr, etiv, nwbv]
         predicted_label = predict_dementia(features)
         st.write("Predicted Label:", predicted_label)
+
+        # Store the prediction in the database
+        cursor = db.cursor()
+        insert_query = "INSERT INTO dementia_predictions (gender, age, educ, ses, mmse, cdr, etiv, nwbv, predicted_label) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(insert_query, (gender, age, educ, ses, mmse, cdr, etiv, nwbv, predicted_label))
+        db.commit()
 
 # Run the app
 if __name__ == '__main__':
