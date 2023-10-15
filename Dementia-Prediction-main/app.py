@@ -56,9 +56,9 @@ def predict_dementia(features):
 # Database connection
 db = mysql.connector.connect(
     host="localhost",
-    user="your_database_user",
-    password="your_database_password",
-    database="your_database_name"
+    user="root",
+    password="",
+    database="game"
 )
 
 # Streamlit app code
@@ -85,7 +85,7 @@ def main():
 
         # Store the prediction in the database
         cursor = db.cursor()
-        insert_query = "INSERT INTO dementia_predictions (gender, age, educ, ses, mmse, cdr, etiv, nwbv, predicted_label) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        insert_query = "INSERT INTO patient(gender, age, educ, ses, mmse, cdr, etiv, nwbv, predicted_label) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(insert_query, (gender, age, educ, ses, mmse, cdr, etiv, nwbv, predicted_label))
         db.commit()
 
